@@ -3,7 +3,7 @@
 Paraitus is a simple, instant access interface for interacting with LLMs. It supports all of the major LLM cloud provider APIs,
 as well as local model frameworks with APIs that follow the OpenAI specification.
 
-Paraitus is designed to give instant access to an simple interface for interacting with the LLM of your choice. The default launch keyboard shortcut (`control+alt+p`) launches the interface with everthing needed for a quick LLM interaction. `escape` closes the Window instantly. No separate programs, windows, or browser tabs to manage. Standard keyboard shortcuts and convenience buttons enable seamless interaction with the system clipboard to move data back and forth between Paraitus and other applications.
+Paraitus is designed to give instant access to an simple interface for interacting with the LLM of your choice. The default launch keyboard shortcut (`control+alt+p`) launches the interface with everthing needed for a quick LLM interaction, and `escape` closes it. No separate programs, browser tabs, or complex interfaces to manage. Keyboard shortcuts enable efficient usage and seamless interaction with the OS clipboard to move data back and forth between Paraitus and other applications.
 
 Paraitus is written in pure Python (using the built-in `tkinter` UI framework), and has minimal other dependencies.
 

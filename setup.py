@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='paraitus',
     version='0.1',
-    description='A simple, cross-platform, instant access interface for calling LLM APIs',
+    description='A simple, cross-platform, instant access interface for calling LLM APIs.',
     author='David Scripka',
     author_email='david.scripka@gmail.com',
     packages=find_packages(exclude=['tests']),
