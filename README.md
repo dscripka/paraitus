@@ -24,7 +24,7 @@ Once installed, you can launch Paraitus by simply issuing the `paraitus` command
 
 There are a few other command-line options to configure Paraitus:
 
-`paraitus set-cache-dir /path/to/my/directory`: Sets the location of the Paraitus cache directory, instead of the default ~/.paraitus location.
+`paraitus --cache-dir /path/to/my/directory`: Sets the location of the Paraitus cache directory, instead of the default ~/.paraitus location.
 
 ## Custom Authentication
 
@@ -43,14 +43,14 @@ class MyCustomAuth(BaseAuth):
         return "Bearer token"
 ```
 
-This class should be saved in the the `~./paraitus/custom_authentication` directory, as `my_custom_auth.py` (note that the CamelCase to underscore naming structure *must* be followed).
+This class should be added to `custom_auth.py` file in the cache directory.
 
 Then, in the paraitus.config file, you can specify your custom authentication class for a given model API:
 
 ```yaml
 - name: my_custom_llm_api
   api_key: None
-  custom_authentication_class: MyCustomAuth
+  authentication_class: MyCustomAuth
 ```
 
 Now when this API is intialized, the `MyCustomAuth.get_access_token` method will be called to get the required access token.

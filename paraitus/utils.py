@@ -11,7 +11,7 @@ def format_code_blocks(text, text_widget):
 
     # Configure the "code_block" tag with red monospace font
     text_widget.tag_configure("code_block", font=("Courier", 12))
-    text_widget.tag_configure("inline_code", font=("Courier", 12), foreground='green', background='lightgrey')
+    text_widget.tag_configure("inline_code", font=("Courier", 12), foreground='green')
 
     for block in code_blocks:
         # Get the code block text and its start and end positions
