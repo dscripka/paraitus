@@ -143,24 +143,23 @@ Escape: Close Window
 
         # Define some callbacks for certain keyboard events
         def on_submit(event):
-            if not event.state & 0x1:  # Check if Shift key is not pressed
-                # Get the text from the input field
-                text_content = text_input.get('1.0', 'end')
-                print(f"Text entered: {text_content}")
+            # Get the text from the input field
+            text_content = text_input.get('1.0', 'end')
+            print(f"Text entered: {text_content}")
 
-                # Get the text from the system prompt field
-                system_prompt_content = system_prompt.get('1.0', 'end')
-                print(f"System prompt: {system_prompt_content}")
+            # Get the text from the system prompt field
+            system_prompt_content = system_prompt.get('1.0', 'end')
+            print(f"System prompt: {system_prompt_content}")
 
-                # Delete the newline character added to the input field
-                text_input.delete('end-1c linestart', 'end')
+            # Delete the newline character added to the input field
+            text_input.delete('end-1c linestart', 'end')
 
-                # Clear the output field
-                text_output.delete('1.0', 'end')
+            # Clear the output field
+            text_output.delete('1.0', 'end')
 
-                # Create a new thread for updating the output field
-                update_thread = threading.Thread(target=update_output, args=(text_content, system_prompt_content))
-                update_thread.start()
+            # Create a new thread for updating the output field
+            update_thread = threading.Thread(target=update_output, args=(text_content, system_prompt_content))
+            update_thread.start()
 
         def update_output(text_content, system_prompt):
             # Get response from the LLM provider and stream it to the output field
