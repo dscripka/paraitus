@@ -9,10 +9,11 @@ Paraitus is written in pure Python (using the built-in `tkinter` UI framework), 
 
 ## Installation
 
-You can install this library using pip:
+You can install this library by cloning the repo and using pip for a local install:
 
 ```bash
-pip install paraitus
+git clone https://github.com/dscripka/paraitus
+pip install -e ./paraitus
 ```
 
 You can configure different APIs in the paraitus.config YAML file, by default created in the ~/.paraitus cache directory for the active user.
@@ -21,6 +22,8 @@ Note that all credentials/keys are saved in plain text in this file, and users w
 ## Usage
 
 Once installed, you can launch Paraitus by simply issuing the `paraitus` command in your terminal or command prompt. Then, open an interface with `control+alt+p`.
+
+Note! You may have to see where your current Python environment installs user-level binaries if `paraitus` isn't in your default system path.
 
 There are a few other command-line options to configure Paraitus:
 

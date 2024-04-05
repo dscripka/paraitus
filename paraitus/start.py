@@ -13,6 +13,16 @@ import paraitus
 from paraitus.providers.anthropic import AnthropicProvider
 from paraitus import utils
 
+# Parse command-line arguments for cache directory location (default is ~/.paraitus)
+parser = argparse.ArgumentParser(description="Paraitus: A simple LLM API interface.")
+parser.add_argument("--cache-dir", type=str, default=os.path.join(os.path.expanduser("~"), ".paraitus"),
+                    help="Directory to store config files and custom authentication classes")
+
+parser = parser.parse_args()
+
+# Load the configuration file
+paraitus.load_config(parser.cache_dir)
+
 def main():
     # Create the main window
     logging.info("Preparing interface...")
@@ -231,15 +241,5 @@ Escape: Close Window
     root.mainloop()
 
 if __name__ == "__main__":
-    # Parse command-line arguments for cache directory location (default is ~/.paraitus)
-    parser = argparse.ArgumentParser(description="Paraitus: A simple LLM interface")
-    parser.add_argument("--cache-dir", type=str, default=os.path.join(os.path.expanduser("~"), ".paraitus"),
-                        help="Directory to store config files and custom authentication classes")
-    
-    parser = parser.parse_args()
-
-    # Load the configuration file
-    paraitus.load_config(parser.cache_dir)
-
     # Run main function
     main()

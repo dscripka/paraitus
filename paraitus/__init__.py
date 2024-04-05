@@ -66,7 +66,8 @@ def load_config(config_dir):
         with open(os.path.join(config_dir, "paraitus.yml"), "r") as file:
             config = yaml.safe_load(file)
     else:
-        raise ValueError(f"Configuration file not found in {config_dir}!")
+        raise ValueError(f"Configuration file for Paraitus not found in {config_dir}!"
+                         " If you are using the --cache-dir argument, make sure the directory provided is correct.")
 
     # Load any custom authentication classes
     load_auth_classes(config_dir)
