@@ -64,10 +64,8 @@ Ctrl+s: Focus System Prompt
 Ctrl+o: Focus Output Text
 Escape: Close Window
         """.strip()
-        shortcuts = ttk.Label(window, text="Keyboard Shortcuts:")
-        shortcuts.grid(row=3, column=0, sticky='w', padx=10, pady=10)
         shortcuts_text = ttk.Label(window, text=keyboard_shortcuts)
-        shortcuts_text.grid(row=4, column=0, sticky='nw', padx=10, pady=10)
+        shortcuts_text.grid(row=6, column=0, sticky='sw', padx=10, pady=10)
 
         # Create a label for the first textbox (system prompt)
         label1 = ttk.Label(window, text="System Prompt:")
@@ -75,10 +73,19 @@ Escape: Close Window
 
         # Create the first textbox with scrollbar
         system_prompt = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
+        system_prompt_starting_height = system_prompt.winfo_reqheight()/20
         scrollbar1 = ttk.Scrollbar(window, orient='vertical', command=system_prompt.yview)
         system_prompt.configure(yscrollcommand=scrollbar1.set)
         system_prompt.grid(row=2, column=1, sticky='nsew', padx=10, pady=10)
         scrollbar1.grid(row=2, column=2, sticky='ns')
+
+        # Bind right click on the sytem prompt Text widget to a callback to expand the window
+        def on_right_click(event):
+            if system_prompt.winfo_reqheight()/20 > system_prompt_starting_height:
+                system_prompt.configure(height=system_prompt_starting_height)
+            else:
+                system_prompt.configure(height=150)
+        system_prompt.bind("<Button-3>", on_right_click)
 
         # Create a label for the second textbox (user input)
         label2 = ttk.Label(window, text="User Input (control+enter to submit):")
@@ -86,10 +93,19 @@ Escape: Close Window
 
         # Create the second textbox with scrollbar
         text_input = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
+        text_input_starting_height = text_input.winfo_reqheight()/20
         scrollbar2 = ttk.Scrollbar(window, orient='vertical', command=text_input.yview)
         text_input.configure(yscrollcommand=scrollbar2.set)
         text_input.grid(row=4, column=1, sticky='nsew', padx=10, pady=10)
         scrollbar2.grid(row=4, column=2, sticky='ns')
+
+        # Bind right click on the sytem prompt Text widget to a callback to expand the window
+        def on_right_click(event):
+            if text_input.winfo_reqheight()/20 > text_input_starting_height:
+                text_input.configure(height=text_input_starting_height)
+            else:
+                text_input.configure(height=150)
+        text_input.bind("<Button-3>", on_right_click)
 
         # Create a label for the third textbox (LLM response)
         label3 = ttk.Label(window, text="LLM Response:")
@@ -97,10 +113,19 @@ Escape: Close Window
 
         # Create the third textbox with scrollbar
         text_output = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
+        text_output_starting_height = text_output.winfo_reqheight()/20
         scrollbar3 = ttk.Scrollbar(window, orient='vertical', command=text_output.yview)
         text_output.configure(yscrollcommand=scrollbar3.set)
         text_output.grid(row=6, column=1, sticky='nsew', padx=10, pady=10)
         scrollbar3.grid(row=6, column=2, sticky='ns')
+
+        # Bind right click on the sytem prompt Text widget to a callback to expand the window
+        def on_right_click(event):
+            if text_output.winfo_reqheight()/20 > text_output_starting_height:
+                text_output.configure(height=text_output_starting_height)
+            else:
+                text_output.configure(height=150)
+        text_output.bind("<Button-3>", on_right_click)
 
         # Configure the textboxes to dynamically resize
         window.grid_rowconfigure(2, weight=4)  # First textbox (system prompt) takes less vertical space
