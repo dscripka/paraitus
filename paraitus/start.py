@@ -80,6 +80,10 @@ Escape: Close Window
         label1 = ttk.Label(window, text="System Prompt:")
         label1.grid(row=1, column=1, sticky='w', padx=10, pady=10)
 
+        # Create label estimated number of tokens in system prompt input
+        token_counter_system_prompt = ttk.Label(window, text="Estimated Tokens: 0")
+        token_counter_system_prompt.grid(row=1, column=1, sticky='e', padx=10, pady=10)
+
         # Create the first textbox with scrollbar
         system_prompt = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
         system_prompt_starting_height = system_prompt.winfo_reqheight()/20
@@ -101,8 +105,8 @@ Escape: Close Window
         label2.grid(row=3, column=1, sticky='w', padx=10, pady=10)
 
         # Create label for token count in user input window
-        token_counter = ttk.Label(window, text="Tokens: 0")
-        token_counter.grid(row=3, column=1, sticky='e', padx=10, pady=10)
+        token_counter_user_input = ttk.Label(window, text="Estimated Tokens: 0")
+        token_counter_user_input.grid(row=3, column=1, sticky='e', padx=10, pady=10)
 
         # Create the second textbox with scrollbar
         text_input = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
@@ -204,6 +208,19 @@ Escape: Close Window
             event.widget.tag_add("sel", "1.0", "end")
             return "break"  # https://stackoverflow.com/a/5871414
 
+        def on_typing(event):
+            # Get the text box associated with the event
+            text_box = event.widget
+
+            # Get the token label associated with the text box
+            token_label = token_counter_system_prompt if text_box == system_prompt else token_counter_user_input
+
+            # Get the text from the input field
+            text_content = text_box.get('1.0', 'end')
+
+            # Update the token counter for the user input field, using the estimate of ~4 characters per token (for english!)
+            token_label.config(text=f"Estimated Tokens: {len(text_content)//4}")
+
         def on_paste(event):
             # Get the text that was pasted
             clipboard_content = root.clipboard_get()
@@ -224,6 +241,10 @@ Escape: Close Window
                         root.clipboard_append(file_content)
                     else:
                         pass # TODO: add handling of other filetypes like images, PDFs, etc.
+
+        # Bind the typing event to the on_typing function for the text input widgets
+        system_prompt.bind("<Key>", on_typing)
+        text_input.bind("<Key>", on_typing)
 
         # Bind the <<Paste>> event to the on_paste function
         system_prompt.bind("<<Paste>>", on_paste)
