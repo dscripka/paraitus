@@ -120,6 +120,10 @@ Escape: Close Window
         label3 = ttk.Label(window, text="LLM Response:")
         label3.grid(row=5, column=1, sticky='w', padx=10, pady=10)
 
+        # Create timer for generation
+        generation_timer = ttk.Label(window, text="")
+        generation_timer.grid(row=5, column=1, sticky='e', padx=10, pady=10)
+
         # Create the third textbox with scrollbar
         text_output = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
         text_output_starting_height = text_output.winfo_reqheight()/20
@@ -174,10 +178,19 @@ Escape: Close Window
             # Get response from the LLM provider and stream it to the output field
             global llm_provider
             response_gen = llm_provider.generate_stream(prompt=text_content, system_prompt=system_prompt)
+            start_time = time.time()
+            last_update_time = 0
             for i in response_gen:
                 if len(i) > 0:
+                    # Add text to output window as it is generated
                     text_output.insert('end', i)
 
+                    # Update generation timer (every second)
+                    if time.time() - last_update_time > 1:
+                        generation_timer.config(text=f"Generating: {int(time.time() - start_time) + 1}s")
+                        last_update_time = time.time()
+
+                    # Update the GUI to reflect the changes
                     text_output.update_idletasks()
 
             # format the output text for code blocks
