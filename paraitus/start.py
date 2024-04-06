@@ -100,6 +100,10 @@ Escape: Close Window
         label2 = ttk.Label(window, text="User Input (control+enter to submit):")
         label2.grid(row=3, column=1, sticky='w', padx=10, pady=10)
 
+        # Create label for token count in user input window
+        token_counter = ttk.Label(window, text="Tokens: 0")
+        token_counter.grid(row=3, column=1, sticky='e', padx=10, pady=10)
+
         # Create the second textbox with scrollbar
         text_input = tk.Text(window, wrap=tk.WORD, font=('Calibri', 12), padx=10, pady=10)
         text_input_starting_height = text_input.winfo_reqheight()/20
@@ -199,6 +203,31 @@ Escape: Close Window
         def select_all(event):
             event.widget.tag_add("sel", "1.0", "end")
             return "break"  # https://stackoverflow.com/a/5871414
+
+        def on_paste(event):
+            # Get the text that was pasted
+            clipboard_content = root.clipboard_get()
+
+            # Get the type of the pasted content
+            if os.path.sep in clipboard_content:
+                if os.path.exists(clipboard_content):
+                    # Check the filetype
+                    ftype = paraitus.utils.check_filetype(clipboard_content)
+
+                    if ftype == "text":
+                        # If the clipboard content is a text file, read its contents
+                        with open(clipboard_content, "r") as file:
+                            file_content = file.read()
+
+                        # Replace the clipboard contents with the loaded file
+                        root.clipboard_clear()
+                        root.clipboard_append(file_content)
+                    else:
+                        pass # TODO: add handling of other filetypes like images, PDFs, etc.
+
+        # Bind the <<Paste>> event to the on_paste function
+        system_prompt.bind("<<Paste>>", on_paste)
+        text_input.bind("<<Paste>>", on_paste)
 
         # Select all text in text input fields with Ctrl+A
         text_input.bind("<Control-a>", select_all)

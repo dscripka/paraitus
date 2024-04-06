@@ -1,4 +1,5 @@
 import re
+import filetype
 
 def format_code_blocks(text, text_widget):
     # Define the regular expression pattern for code blocks
@@ -41,3 +42,21 @@ def format_code_blocks(text, text_widget):
 
     # Update the GUI to reflect the changes
     text_widget.update_idletasks()
+
+def check_filetype(path):
+    """Predicts the type of a file based on heuristics and/or magic bytes
+    
+    Args:
+        path (str): The path to the file to be checked
+
+    Returns:
+        str: The predicted file type
+    """
+    # Check using filetype library
+    ftype = filetype.guess(path)
+    if ftype is not None:
+        return ftype
+    else:
+        # Check for common text file extensions
+        if re.search("\.(txt|text|md|markdown|log|ini|conf|cfg|config|rc|properties|env|env\.[^.]+|json|xml|yml|yaml|csv|tsv|tab|html|htm|xhtml|asp|aspx|php|jsp|js|css|less|sass|scss|py|rb|pl|pm|sh|bat|cmd|ps1|vbs|asm|c|cpp|h|hpp|java|go|rs|swift|sql|r|m|f|f90|f95|f03|f08|ad[bs]|ada)$", path):
+            return "text"

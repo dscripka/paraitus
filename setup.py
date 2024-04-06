@@ -9,7 +9,8 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=[
         "pynput>=1.7.3,<2.0",
-        "sv-ttk>=2.6.0,<3.0"
+        "sv-ttk>=2.6.0,<3.0",
+        "filetype>=1.0.7,<2.0",
     ],
     entry_points={
         'console_scripts': [
