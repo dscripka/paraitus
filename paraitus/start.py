@@ -10,7 +10,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 import threading
 import paraitus
-from paraitus.providers.anthropic import AnthropicProvider
 from paraitus import utils
 
 # Parse command-line arguments for cache directory location (default is ~/.paraitus)
@@ -174,7 +173,7 @@ Escape: Close Window
         def update_output(text_content, system_prompt):
             # Get response from the LLM provider and stream it to the output field
             global llm_provider
-            response_gen = llm_provider.generate(prompt=text_content, system_prompt=system_prompt)
+            response_gen = llm_provider.generate_stream(prompt=text_content, system_prompt=system_prompt)
             for i in response_gen:
                 if len(i) > 0:
                     text_output.insert('end', i)

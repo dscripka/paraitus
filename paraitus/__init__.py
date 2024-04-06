@@ -2,9 +2,9 @@
 
 import sys
 import os
-from pathlib import Path
 import yaml
-from paraitus.providers.anthropic import AnthropicProvider
+import importlib
+import inspect
 
 # Set library attributes
 MODELS = []
@@ -41,7 +41,14 @@ if not os.path.exists(custom_auth_file):
     with open(custom_auth_file, "w") as file:
         file.write("# Define custom authentication classes for Paraitus here\n")
 
-# Load custom authentication classes from the configuration file
+# Check if the custom provider class file exists
+custom_provider_file = os.path.join(config_dir, "custom_providers.py")
+if not os.path.exists(custom_provider_file):
+    # Create a new custom provider class file
+    with open(custom_provider_file, "w") as file:
+        file.write("# Define custom provider classes for Paraitus here\n")
+
+# Load custom authentication classes
 def load_auth_classes(config_dir):
     if os.path.exists(os.path.join(config_dir, "custom_auth.py")):
         sys.path.append(config_dir)
@@ -54,8 +61,34 @@ def get_auth_class(model_config):
     class_name = model_config['authentication_class']
 
     # Dynamically import the module containing the class
-    module = __import__("custom_auth", fromlist=[class_name])
+    module = importlib.import_module("custom_auth")
     class_ref = getattr(module, class_name)
+
+    return class_ref
+
+# Load custom model classes
+def load_custom_providers(config_dir):
+    if os.path.exists(os.path.join(config_dir, "custom_providers.py")):
+        sys.path.append(config_dir)
+        import custom_providers
+    else:
+        raise ValueError(f"Custom authentication class file not found in {config_dir}!")
+
+def get_provider_class(model_config):
+    # Get the class name from the YAML file
+    class_name = model_config['api_type']
+
+    # Dynamically import the module containing the classes
+    custom_module = importlib.import_module("custom_providers")
+    custom_classes = [name for name, obj in inspect.getmembers(custom_module) if inspect.isclass(obj)]
+
+    standard_module = importlib.import_module("paraitus.providers.standard_providers")
+    standard_classes = [name for name, obj in inspect.getmembers(standard_module) if inspect.isclass(obj)]
+
+    if class_name in custom_classes:
+        class_ref = getattr(custom_module, class_name)
+    elif class_name in standard_classes:
+        class_ref = getattr(standard_module, class_name)
 
     return class_ref
 
@@ -72,17 +105,20 @@ def load_config(config_dir):
     # Load any custom authentication classes
     load_auth_classes(config_dir)
 
-    # Load models
+    # Load any custom providers
+    load_custom_providers(config_dir)
+
+    # Load built-in model providers
     global MODELS
     for model in config:
         if model.get("authentication_class", None) is not None:
             auth_class = get_auth_class(model)()
             model["api_key"] = auth_class.get_access_token()
 
-        if model["api_type"] == "Anthropic":
-            model["provider"] = AnthropicProvider(
-                url=model["api_url"],
-                key=model["api_key"],
-                model_id=model["model_id"]
-            )
+        model["provider"] = get_provider_class(model)(
+            url=model["api_url"],
+            key=model["api_key"],
+            model_id=model["model_id"]
+        )
         MODELS.append(model)
+    

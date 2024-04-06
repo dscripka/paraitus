@@ -2,13 +2,15 @@
 # from paraitus.providers import Provider
 import json
 import requests
+from paraitus.providers.provider import Provider
+from typing import Generator
 
-class AnthropicProvider():
+class Anthropic(Provider):
     def __init__(
         self,
-        url = "https://api.anthropic.com/v1/messages",
-        key = "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",
-        model_id = "claude-3-haiku-20240307",
+        url: str,
+        key: str,
+        model_id: str,
         **kwargs
         ):
         super().__init__(**kwargs)
@@ -24,7 +26,20 @@ class AnthropicProvider():
             "x-api-key": key
         }
 
-    def generate(self, prompt, system_prompt="", stream=True, **kwargs):
+    def generate(self, prompt: str, system_prompt: str="", **kwargs) -> Generator[str, None, None]:
+        data = {
+            "model": self.model,
+            "system": system_prompt,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": kwargs.get("max_tokens", 2048),
+            "temperature": kwargs.get("temperature", 0.0),
+            "stream": False
+        }
+
+        response = requests.post(self.url, headers=self.headers, json=data)
+        return json.loads(response.text)["messages"][0]["content"]
+
+    def generate_stream(self, prompt: str, system_prompt: str="", **kwargs) -> str:
         messages = []
 
         data = {
@@ -33,7 +48,7 @@ class AnthropicProvider():
             "messages": messages + [{"role": "user", "content": prompt}],
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 0.0),
-            "stream": stream
+            "stream": True
         }
 
         response = requests.post(self.url, headers=self.headers, json=data, stream=True)
@@ -41,9 +56,7 @@ class AnthropicProvider():
         for i in response_generator:
             yield i
     
-    def get_response_text(self, stream):
-        response_text = ""
-        content_block = None
+    def get_response_text(self, stream: requests.models.Response) -> Generator[str, None, None]:
         for chunk in stream.iter_lines():
             data = chunk.decode("utf-8")
             if "data:" in data:

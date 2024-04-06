@@ -16,18 +16,48 @@ git clone https://github.com/dscripka/paraitus
 pip install -e ./paraitus
 ```
 
-You can configure different APIs in the paraitus.config YAML file, by default created in the ~/.paraitus cache directory for the active user.
-Note that all credentials/keys are saved in plain text in this file, and users with with more strict or complex security requirements should follow the instructions in the [custom authentication](#custom-authentication) to extend Paraitus.
+You can configure different APIs in the `paraitus.yml` YAML configuration file, by default stored in the ~/.paraitus cache directory for the active user. Note that all credentials/keys are saved in plain text in this file, and users with with more strict or complex security requirements should follow the instructions in the [custom authentication](#custom-authentication) to extend Paraitus.
+
+The default structure of the YAML configuration file is shown below, with an example entry for an LLM API:
+
+```yaml
+- name: Anthropic Claude 3 Haiku  # the name of the LLM API to display in Paraitus
+  model_id: claude-3-haiku-20240307 # the specific model name/id offered by the API provider (e.g., gpt-35-turbo, mistral-medium, etc.)
+  api_key: abc123  # the key for the API
+  api_url: https://api.anthropic.com/v1/messages  # the URL for the API
+  default: False  # whether this model and API should be the default
+  api_type: Anthropic  # the type of the API, corresponding to either the built-in or custom API classes for the LLM provider
+  authentication_class: MyCustomAuth  # a custom authentication class for the API (if not using standard API keys)
+```
+
+Paraitus has built-in support for many different LLM providers, and can be easily extended to others. Supported values for the `api_type` parameter in the config file are `Anthropic, OpenAI, Mistral, Cohere`.
 
 ## Usage
 
-Once installed, you can launch Paraitus by simply issuing the `paraitus` command in your terminal or command prompt. Then, open an interface with `control+alt+p`.
+Once installed and the config file created, you can launch Paraitus by simply issuing the `paraitus` command in your terminal or command prompt. Then, open an interface with `control+alt+p`.
 
 Note! You may have to see where your current Python environment installs user-level binaries if `paraitus` isn't in your default system path.
 
 There are a few other command-line options to configure Paraitus:
 
 `paraitus --cache-dir /path/to/my/directory`: Sets the location of the Paraitus cache directory, instead of the default ~/.paraitus location.
+
+### Adding New APIs
+
+You can easily add new API providers to Paraitus by inheriting from the `Provider` base class:
+
+```python
+# Generic LLM provider base class
+class Provider():
+    def __init__(self, url, key):
+        self.url = url
+        self.key = key
+
+    def generate(**kwargs):
+        # Method that actually generate responses
+        pass
+```
+This class should be added to the `custom_providers.py` file in the cache directory.
 
 ## Custom Authentication
 
