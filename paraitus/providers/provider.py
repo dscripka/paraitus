@@ -10,7 +10,7 @@ class Provider(ABC):
 
     @abstractmethod
     def generate_stream(self, **kwargs) -> Generator[str, None, None]:
-        "A function that returns a generator that yields text from the model"
+        "A function that returns a generator, yielding text from the model"
         pass
 
     @abstractmethod
