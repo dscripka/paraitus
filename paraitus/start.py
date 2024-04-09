@@ -183,20 +183,30 @@ Escape: Close Window
             update_thread.start()
 
         def update_output(text_content, system_prompt):
-            # Get response from the LLM provider and stream it to the output field
-            global llm_provider
-            response_gen = llm_provider.generate_stream(prompt=text_content, system_prompt=system_prompt)
+            # Get response from the LLM provider
             start_time = time.time()
+            
+            global llm_provider
+            if llm_provider.streaming is True:
+                response_gen = llm_provider.generate_stream(prompt=text_content, system_prompt=system_prompt)
+            else:
+                generation_timer.config(text=f"Generating response...")
+                start_time = time.time()
+                response_gen = [llm_provider.generate(prompt=text_content, system_prompt=system_prompt)]
+                generation_timer.config(text=f"Generation time: {int(time.time() - start_time)}s")
+
+            # Enter the response into the output field (either streaming or all at once)
             last_update_time = 0
             for i in response_gen:
                 if len(i) > 0:
                     # Add text to output window as it is generated
                     text_output.insert('end', i)
 
-                    # Update generation timer (every second)
-                    if time.time() - last_update_time > 1:
-                        generation_timer.config(text=f"Generating: {int(time.time() - start_time) + 1}s")
-                        last_update_time = time.time()
+                    # Update generation timer (every second) if streaming
+                    if llm_provider.streaming is True:
+                        if time.time() - last_update_time > 1:
+                            generation_timer.config(text=f"Generating: {int(time.time() - start_time) + 1}s")
+                            last_update_time = time.time()
 
                     # Update the GUI to reflect the changes
                     text_output.update_idletasks()

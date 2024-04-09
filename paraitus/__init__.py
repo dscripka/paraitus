@@ -108,7 +108,7 @@ def load_config(config_dir):
     # Load any custom providers
     load_custom_providers(config_dir)
 
-    # Load built-in model providers
+    # Load built-in and custom model providers
     global MODELS
     for model in config:
         if model.get("authentication_class", None) is not None:
@@ -118,7 +118,8 @@ def load_config(config_dir):
         model["provider"] = get_provider_class(model)(
             url=model["api_url"],
             key=model["api_key"],
-            model_id=model["model_id"]
+            model_id=model["model_id"],
+            streaming=model.get("streaming", False)
         )
         MODELS.append(model)
     

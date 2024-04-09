@@ -28,6 +28,7 @@ The default structure of the YAML configuration file is shown below, with an exa
   default: False  # whether this model and API should be the default
   api_type: Anthropic  # the type of the API, corresponding to either the built-in or custom API classes for the LLM provider
   authentication_class: MyCustomAuth  # a custom authentication class for the API (if not using standard API keys)
+  streaming: True  # whether to stream the responses from the LLM provider API
 ```
 
 Paraitus has built-in support for many different LLM providers, and can be easily extended to others. Supported values for the `api_type` parameter in the config file are `Anthropic, OpenAI, Mistral, Cohere`.

@@ -11,6 +11,7 @@ class Anthropic(Provider):
         url: str,
         key: str,
         model_id: str,
+        streaming: bool = False,
         **kwargs
         ):
         super().__init__(**kwargs)
@@ -19,6 +20,7 @@ class Anthropic(Provider):
         self.url = url
         self.key = key
         self.model = model_id
+        self.streaming = streaming
         self.headers = {
             "anthropic-version": "2023-06-01",
             "anthropic-beta": "messages-2023-12-15",
@@ -37,7 +39,7 @@ class Anthropic(Provider):
         }
 
         response = requests.post(self.url, headers=self.headers, json=data)
-        return json.loads(response.text)["messages"][0]["content"]
+        return response.json()["content"][0]['text']
 
     def generate_stream(self, prompt: str, system_prompt: str="", **kwargs) -> str:
         messages = []
