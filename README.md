@@ -31,7 +31,7 @@ The default structure of the YAML configuration file is shown below, with an exa
   streaming: True  # whether to stream the responses from the LLM provider API
 ```
 
-Paraitus has built-in support for many different LLM providers, and can be easily extended to others. Supported values for the `api_type` parameter in the config file are `Anthropic, OpenAI, Mistral, Cohere`.
+Paraitus has built-in support for many different LLM providers, and can be easily extended to others. Supported values for the `api_type` parameter in the config file are currently `Anthropic` and `OpenAI`.
 
 ## Usage
 
