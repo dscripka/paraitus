@@ -60,6 +60,18 @@ def main():
         combo.current(model_names.index([i['name'] for i in paraitus.MODELS if i["default"] == True][0]))
         combo.grid(row=2, column=0, sticky='nw', padx=10, pady=10)
 
+        # Creat text input fields for temperature and top-p
+        temperature_label = ttk.Label(window, text="Temperature:")
+        temperature_label.grid(row=2, column=0, sticky='ws', padx=10, pady=90)
+        temperature_input = ttk.Entry(window)
+        temperature_input.insert(0, "0.0") 
+        temperature_input.grid(row=2, column=0, sticky='ws', padx=10, pady=60)
+        top_p_label = ttk.Label(window, text="Top-p:")
+        top_p_label.grid(row=2, column=0, sticky='ws', padx=10, pady=40)
+        top_p_input = ttk.Entry(window)
+        top_p_input.insert(0, "1.0")
+        top_p_input.grid(row=2, column=0, sticky='ws', padx=10, pady=10)
+
         # Load the default model based on the provider type
         global llm_provider
         llm_provider = [i["provider"] for i in paraitus.MODELS if i["default"] == True][0]
@@ -172,6 +184,10 @@ Escape: Close Window
             system_prompt_content = system_prompt.get('1.0', 'end')
             print(f"System prompt: {system_prompt_content}")
 
+            # Get the temperature and top-p values
+            temperature = float(temperature_input.get())
+            top_p = float(top_p_input.get())
+
             # Delete the newline character added to the input field
             text_input.delete('end-1c linestart', 'end')
 
@@ -179,20 +195,26 @@ Escape: Close Window
             text_output.delete('1.0', 'end')
 
             # Create a new thread for updating the output field
-            update_thread = threading.Thread(target=update_output, args=(text_content, system_prompt_content))
+            update_thread = threading.Thread(target=update_output,
+                                             args=(text_content, system_prompt_content, temperature, top_p))
             update_thread.start()
 
-        def update_output(text_content, system_prompt):
+        def update_output(text_content, system_prompt, temperature, top_p):
             # Get response from the LLM provider
             start_time = time.time()
             
             global llm_provider
             if llm_provider.streaming is True:
-                response_gen = llm_provider.generate_stream(prompt=text_content, system_prompt=system_prompt)
+                response_gen = llm_provider.generate_stream(
+                    prompt=text_content,
+                    system_prompt=system_prompt,
+                    temperature=temperature,
+                    top_p=top_p
+                )
             else:
                 generation_timer.config(text=f"Generating response...")
                 start_time = time.time()
-                response_gen = [llm_provider.generate(prompt=text_content, system_prompt=system_prompt)]
+                response_gen = [llm_provider.generate(prompt=text_content, system_prompt=system_prompt, temperature=temperature, top_p=top_p)]
                 generation_timer.config(text=f"Generation time: {int(time.time() - start_time)}s")
 
             # Enter the response into the output field (either streaming or all at once)

@@ -37,6 +37,7 @@ class Anthropic(Provider):
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 0.0),
+            "top_p": kwargs.get("top_p", 1.0),
             "stream": False
         }
 
@@ -52,6 +53,7 @@ class Anthropic(Provider):
             "messages": messages + [{"role": "user", "content": prompt}],
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 0.0),
+            "top_p": kwargs.get("top_p", 1.0),
             "stream": True
         }
 
@@ -102,7 +104,8 @@ class OpenAI(Provider):
             "model": self.model,
             "messages": messages,
             "max_tokens": kwargs.get("max_tokens", 2048),
-            "temperature": kwargs.get("temperature", 0.0)
+            "temperature": kwargs.get("temperature", 0.0),
+            "top_p": kwargs.get("top_p", 1.0)
         }
 
         response = requests.post(self.base_url, headers=self.headers, json=data)
@@ -115,6 +118,7 @@ class OpenAI(Provider):
             "messages": messages,
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 0.0),
+            "top_p": kwargs.get("top_p", 1.0),
             "stream": True
         }
 
