@@ -60,17 +60,22 @@ def main():
         combo.current(model_names.index([i['name'] for i in paraitus.MODELS if i["default"] == True][0]))
         combo.grid(row=2, column=0, sticky='nw', padx=10, pady=10)
 
-        # Creat text input fields for temperature and top-p
+        # Creat text input fields for temperature, top-p, and max tokens
         temperature_label = ttk.Label(window, text="Temperature:")
-        temperature_label.grid(row=2, column=0, sticky='ws', padx=10, pady=90)
+        temperature_label.grid(row=4, column=0, sticky='wn', padx=10, pady=10)
         temperature_input = ttk.Entry(window)
         temperature_input.insert(0, "0.0") 
-        temperature_input.grid(row=2, column=0, sticky='ws', padx=10, pady=60)
+        temperature_input.grid(row=4, column=0, sticky='wn', padx=10, pady=30)
         top_p_label = ttk.Label(window, text="Top-p:")
-        top_p_label.grid(row=2, column=0, sticky='ws', padx=10, pady=40)
+        top_p_label.grid(row=4, column=0, sticky='wn', padx=10, pady=60)
         top_p_input = ttk.Entry(window)
         top_p_input.insert(0, "1.0")
-        top_p_input.grid(row=2, column=0, sticky='ws', padx=10, pady=10)
+        top_p_input.grid(row=4, column=0, sticky='wn', padx=10, pady=80)
+        max_tokens_label = ttk.Label(window, text="Max Tokens:")
+        max_tokens_label.grid(row=4, column=0, sticky='wn', padx=10, pady=110)
+        max_tokens_input = ttk.Entry(window)
+        max_tokens_input.insert(0, "2048")
+        max_tokens_input.grid(row=4, column=0, sticky='wn', padx=10, pady=130)
 
         # Load the default model based on the provider type
         global llm_provider
@@ -178,28 +183,24 @@ Escape: Close Window
         def on_submit(event):
             # Get the text from the input field
             text_content = text_input.get('1.0', 'end')
-            print(f"Text entered: {text_content}")
 
             # Get the text from the system prompt field
             system_prompt_content = system_prompt.get('1.0', 'end')
-            print(f"System prompt: {system_prompt_content}")
 
-            # Get the temperature and top-p values
+            # Get the temperature, top-p values, and max tokens
             temperature = float(temperature_input.get())
             top_p = float(top_p_input.get())
-
-            # Delete the newline character added to the input field
-            text_input.delete('end-1c linestart', 'end')
+            max_tokens = int(max_tokens_input.get())
 
             # Clear the output field
             text_output.delete('1.0', 'end')
 
             # Create a new thread for updating the output field
             update_thread = threading.Thread(target=update_output,
-                                             args=(text_content, system_prompt_content, temperature, top_p))
+                                             args=(text_content, system_prompt_content, temperature, top_p, max_tokens))
             update_thread.start()
 
-        def update_output(text_content, system_prompt, temperature, top_p):
+        def update_output(text_content, system_prompt, temperature, top_p, max_tokens):
             # Get response from the LLM provider
             start_time = time.time()
             
@@ -209,12 +210,13 @@ Escape: Close Window
                     prompt=text_content,
                     system_prompt=system_prompt,
                     temperature=temperature,
-                    top_p=top_p
+                    top_p=top_p,
+                    max_tokens=max_tokens
                 )
             else:
                 generation_timer.config(text=f"Generating response...")
                 start_time = time.time()
-                response_gen = [llm_provider.generate(prompt=text_content, system_prompt=system_prompt, temperature=temperature, top_p=top_p)]
+                response_gen = [llm_provider.generate(prompt=text_content, system_prompt=system_prompt, temperature=temperature, top_p=top_p, max_tokens=max_tokens)]
                 generation_timer.config(text=f"Generation time: {int(time.time() - start_time)}s")
 
             # Enter the response into the output field (either streaming or all at once)
