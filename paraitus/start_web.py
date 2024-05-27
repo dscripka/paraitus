@@ -4,7 +4,7 @@ import paraitus
 from paraitus import utils
 import argparse
 import os
-
+from pynput import mouse, keyboard
 
 # Setup Flask app
 app = Flask(__name__)
@@ -39,6 +39,10 @@ def models():
     # Get model information from the MODELS global variable
     return jsonify([i["name"] for i in paraitus.MODELS])
 
+# Set up the OS-wide keyboard listener to open the window
+def launch_window():
+    os.system("firefox http://localhost:5000")
+
 if __name__ == '__main__':
     # Parse command-line arguments for cache directory location (default is ~/.paraitus)
     parser = argparse.ArgumentParser(description="Paraitus: A simple LLM API interface.")
@@ -50,5 +54,8 @@ if __name__ == '__main__':
     # Initialize paraitus configuration
     paraitus.load_config(parser.cache_dir)
 
-    # Start the webserver
-    app.run(debug=True)
+    listener = keyboard.GlobalHotKeys({'<ctrl>+<alt>+p': launch_window})
+    listener.start()
+
+    # Start the webserver (debug mode breaks the pnyput listener)
+    app.run(debug=False)
