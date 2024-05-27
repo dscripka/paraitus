@@ -1,0 +1,163 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 1%;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.chat-container {
+    width: 50%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    height: 90%;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.parameters-system-prompt {
+    margin-bottom: 10px;
+    padding: 10px 10px 10px 10px;
+}
+
+.parameters-system-prompt .parameter-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.parameters-system-prompt input {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.parameters-system-prompt input {
+    width: 100px;
+}
+
+.parameters-system-prompt label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#system-prompt {
+    padding: 10px;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 95%; /* Adjust width to account for padding */
+    min-height: 150px; /* Set the minimum height */
+    resize: none; /* Disable manual resizing */
+    overflow: auto; /* Show scrollbars if content exceeds the height */
+}
+
+.interaction {
+    height: 100%;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 15px 30px 0 10px;
+}
+
+.interaction .message {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.interaction .message .user-input, .interaction .message .llm-output{
+    width: 100%;
+    padding: 10px;
+    display: inline-block;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; /* Keep this for consistency, even though divs don't use it */
+    min-height: 50px; /* Set minimum height */
+    overflow-y: hidden; /* Hide scrollbars within the div */
+}
+
+.interaction .message .message-content {
+    flex-grow: 1;
+}
+
+.interaction .message .message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0px;
+}
+
+.interaction .message .delete-btn {
+    margin-left: 10px;
+    margin-right: -20px;
+}
+
+.interaction .message label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.interaction textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; /* Disable manual resizing */
+    min-height: 50px; /* Set minimum height */
+    overflow-y: hidden; /* Hide scrollbars within the textarea */
+}
+
+.interaction .message button {
+    margin-left: 10px;
+}
+
+.collapsible {
+    background-color: #f1f1f1;
+    color: #444;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.active, .collapsible:hover {
+    background-color: #ccc;
+}
+
+.collapsible::after {
+    content: "\2630"; /* Unicode value for the hamburger icon */
+    font-size: 1.5em; /* Increase the font size */
+    margin-right: 10px; /* Add some right margin */
+}
+
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}

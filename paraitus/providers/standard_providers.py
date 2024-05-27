@@ -30,11 +30,19 @@ class Anthropic(Provider):
             "x-api-key": key
         }
 
-    def generate(self, prompt: str, system_prompt: str="", **kwargs) -> Generator[str, None, None]:
+    def generate(self, **kwargs) -> Generator[str, None, None]:
+        # Check for a system prompt
+        messages = kwargs.get("messages")
+        if messages is None:
+            raise ValueError("No messages provided for model input! Input arguments must be OpenAI API spec compliant.")
+        system_message = [i for i in messages if i["role"] == "system"]
+        system_prompt = system_message[0]["content"] if len(system_message) > 0 else ""
+
+        # Build payload
         data = {
             "model": self.model,
             "system": system_prompt,
-            "messages": [{"role": "user", "content": prompt}],
+            "messages": [i for i in messages if i["role"] != "system"],
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 0.0),
             "top_p": kwargs.get("top_p", 1.0),
@@ -44,13 +52,18 @@ class Anthropic(Provider):
         response = requests.post(self.url, headers=self.headers, json=data)
         return response.json()["content"][0]['text']
 
-    def generate_stream(self, prompt: str, system_prompt: str="", **kwargs) -> str:
-        messages = []
+    def generate_stream(self, **kwargs) -> str:
+        # Check for a system prompt
+        messages = kwargs.get("messages")
+        if messages is None:
+            raise ValueError("No messages provided for model input! Input arguments must be OpenAI API spec compliant.")
+        system_message = [i for i in messages if i["role"] == "system"]
+        system_prompt = system_message[0]["content"] if len(system_message) > 0 else ""
 
         data = {
             "model": self.model,
             "system": system_prompt,
-            "messages": messages + [{"role": "user", "content": prompt}],
+            "messages": [i for i in messages if i["role"] != "system"],
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 0.0),
             "top_p": kwargs.get("top_p", 1.0),
@@ -74,8 +87,8 @@ class Anthropic(Provider):
             else:
                 yield ""
 
-# OpenAI Provider
 
+# OpenAI Provider
 class OpenAI(Provider):
     def __init__(
         self,

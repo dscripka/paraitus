@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Interaction Frontend</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat">
+            <button type="button" class="collapsible">Parameters and System Prompt</button>
+            <div class="content parameters-system-prompt">
+                <div class="parameter-row">
+                    <div>
+                        <label for="model">Model:</label>
+                        <select id="model" name="model">
+                        </select>
+                    </div>
+                    <div>
+                        <label for="temperature">Temperature:</label>
+                        <input type="number" id="temperature" name="temperature" min="0" max="1" step="0.1" value="0.0">
+                    </div>
+                    <div>
+                        <label for="top-p">Top-P:</label>
+                        <input type="number" id="top-p" name="top-p" min="0" max="1" step="0.1" value="1.0">
+                    </div>
+                    <div>
+                        <label for="max-tokens">Max Tokens:</label>
+                        <input type="number" id="max-tokens" name="max-tokens" min="1" max="1000" value="4095">
+                    </div>
+                </div>
+                <label for="system-prompt"><strong>System Prompt:</strong></label>
+                <div id="system-prompt" name="system-prompt" contenteditable="true">You are a helpful AI assistant.</div>
+            </div>
+            <div class="interaction">
+                <div class="message">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <label for="user-input-1">User:</label>
+                            <button class="delete-btn" onclick="deleteMessage(this.parentNode.parentNode)">Delete</button>
+                        </div>
+                        <div id="user-input-1" contenteditable="true" class="user-input"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.6/markdown-it.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+<script src="static/js/src.js"></script>
+</body>
+</html>

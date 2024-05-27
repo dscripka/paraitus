@@ -123,3 +123,8 @@ def load_config(config_dir):
         )
         MODELS.append(model)
     
+def get_model(model_name):
+    for model in MODELS:
+        if model["name"] == model_name:
+            return model["provider"]
+    raise ValueError(f"Model {model_name} not found in the configuration file.")
